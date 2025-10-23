@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1f2937" />
+  <meta name="description" content="Vimal Jyothi Engineering College — Open Source Complaint System" />
+  <link rel="manifest" href="{% static 'complaints/manifest.json' %}">
+  <link rel="icon" href="{% static 'complaints/img/logo.png' %}" type="image/png" />
+  <link rel="apple-touch-icon" href="{% static 'complaints/img/logo.png' %}">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { display: ['Poppins', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            brand: { DEFAULT: '#4f46e5', dark: '#3730a3' },
+            accent: { DEFAULT: '#14b8a6' }
+          },
+          boxShadow: { 'soft': '0 10px 30px -10px rgba(0,0,0,0.25)' },
+          borderRadius: { '2xl': '1.25rem' },
+          backdropBlur: { xs: '2px' }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="{% static 'complaints/css/custom.css' %}" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  {% block head_extra %}{% endblock %}
+  <title>Vimal Jyothi Engineering College — Complaints</title>
+</head>
+<body class="h-full bg-slate-50 text-slate-900 antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white px-3 py-2 rounded shadow">Skip to content</a>
+  {% if not request.path == '/' %}
+    <div class="fixed inset-0 w-full h-full z-0 pointer-events-none">
+      <img src="{% static 'complaints/img/vjec5.webp' %}" alt="VJEC campus" class="object-cover w-full h-full" style="filter: blur(2px) brightness(0.85);" />
+    </div>
+  {% endif %}
+  {% include 'partials/nav.html' %}
+
+  {% block hero %}{% endblock %}
+
+  <main id="main" class="min-h-[60vh] relative z-10">{% block content %}{% endblock %}</main>
+
+  {% include 'partials/footer.html' %}
+
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+  <script src="{% static 'complaints/js/hero.js' %}"></script>
+  <script src="{% static 'complaints/js/app.js' %}"></script>
+  <script src="{% static 'complaints/js/slideshow.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

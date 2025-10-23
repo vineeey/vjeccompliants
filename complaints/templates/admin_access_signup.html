@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="mx-auto max-w-md px-4 sm:px-6 lg:px-8 py-12">
+  <h1 class="font-display text-3xl font-bold">Create HOD/Principal Account</h1>
+  <p class="mt-2 text-slate-600">Only for authorized administrators with the secret key.</p>
+
+  {% if messages %}
+    <ul class="mt-4 space-y-2">
+      {% for message in messages %}
+        <li class="text-sm {% if 'error' in message.tags %}text-red-600{% else %}text-green-700{% endif %}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="post" class="mt-6 space-y-4 rounded-2xl bg-white/70 backdrop-blur border border-slate-200 p-6 shadow-soft">
+    {% csrf_token %}
+    <div>
+      <label for="id_username" class="block text-sm font-medium">Username</label>
+      <input type="text" name="username" id="id_username" required class="mt-1 w-full rounded-xl border-slate-300" value="{{ form.username.value|default:'' }}" />
+    </div>
+    <div>
+      <label for="id_email" class="block text-sm font-medium">Email</label>
+      <input type="email" name="email" id="id_email" required class="mt-1 w-full rounded-xl border-slate-300" value="{{ form.email.value|default:'' }}" />
+    </div>
+    <div>
+      <label for="id_password" class="block text-sm font-medium">Password</label>
+      <input type="password" name="password" id="id_password" required class="mt-1 w-full rounded-xl border-slate-300" />
+    </div>
+    <div>
+      <label for="id_role" class="block text-sm font-medium">Role</label>
+      <select name="role" id="id_role" class="mt-1 w-full rounded-xl border-slate-300">
+        <option value="HOD" {% if form.role.value == 'HOD' %}selected{% endif %}>HOD</option>
+        <option value="Principal" {% if form.role.value == 'Principal' %}selected{% endif %}>Principal</option>
+      </select>
+    </div>
+    <div>
+      <label for="id_secret_key" class="block text-sm font-medium">Secret key</label>
+      <input type="password" name="secret_key" id="id_secret_key" required class="mt-1 w-full rounded-xl border-slate-300" />
+      <p class="mt-1 text-xs text-slate-500">If you do not know the secret key, contact the system administrator.</p>
+    </div>
+    <button type="submit" class="w-full px-4 py-2 rounded-xl bg-brand text-white">Create Admin Account</button>
+  </form>
+</section>
+{% endblock %}

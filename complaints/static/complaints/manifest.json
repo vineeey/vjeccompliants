@@ -1,0 +1,11 @@
+{
+  "name": "VJEC Complaints",
+  "short_name": "Complaints",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f2937",
+  "icons": [
+  { "src": "/static/complaints/img/logo.png", "sizes": "200x200", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

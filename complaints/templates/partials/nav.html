@@ -1,0 +1,44 @@
+{% load static %}
+{% load roles %}
+<header class="sticky top-0 z-40 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-slate-200">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <a href="{% url 'home' %}" class="flex items-center gap-3" aria-label="Vimal Jyothi Engineering College Home">
+  <img src="{% static 'complaints/img/logo.png' %}" alt="VJEC Logo" class="h-8 w-8" />
+        <span class="font-display font-semibold tracking-tight">Vimal Jyothi Engineering College</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6" aria-label="Primary">
+        <a href="{% url 'home' %}" class="hover:text-brand">Home</a>
+        {% if request.user|has_admin_role %}
+          <a href="{% url 'complaints-dashboard' %}" class="hover:text-brand">Manage Complaints</a>
+          <!-- Assign to Faculty option removed -->
+          <a href="{% url 'reports' %}" class="hover:text-brand">Reports</a>
+          <a href="{% url 'admin-audit' %}" class="hover:text-brand">Audit Trail</a>
+        {% else %}
+          <a href="{% url 'submit_complaint' %}" class="hover:text-brand">Submit Complaint</a>
+          <a href="{% url 'my_cases' %}" class="hover:text-brand">My Complaints</a>
+          <a href="{% url 'help' %}" class="hover:text-brand">Help</a>
+          <a href="/auth/password_change/" class="hover:text-brand">Profile</a>
+        {% endif %}
+      </nav>
+
+      <div class="hidden md:flex items-center gap-3">
+        {% if request.user.is_authenticated %}
+          <span class="text-sm">Hi, {{ request.user.first_name|default:request.user.username }}</span>
+          <form id="logoutForm" action="{% url 'app-logout' %}" method="post" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="px-3 py-1.5 rounded bg-slate-900 text-white hover:bg-slate-700">Logout</button>
+          </form>
+        {% else %}
+          <a href="/auth/login/" class="px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200">Login</a>
+          <a href="{% url 'signup' %}" class="px-3 py-1.5 rounded bg-brand text-white hover:bg-brand-dark">Signup</a>
+        {% endif %}
+      </div>
+
+      <button class="md:hidden inline-flex items-center justify-center rounded p-2 hover:bg-slate-100" x-data="{open:false}" @click="open=!open" aria-label="Open menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+      </button>
+    </div>
+  </div>
+</header>

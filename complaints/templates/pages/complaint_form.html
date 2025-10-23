@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="flex items-center justify-center min-h-[80vh] px-2">
+  <div class="w-full max-w-2xl mx-auto rounded-3xl bg-white/80 backdrop-blur-lg border border-slate-200 shadow-2xl p-8">
+    <h1 class="font-display text-3xl font-bold text-center mb-2">Submit a Complaint</h1>
+    <p class="mb-6 text-slate-600 text-center">You can submit anonymously. Voice notes and attachments are supported.</p>
+  <form id="complaintForm" x-data="complaintForm({{ request.user.is_authenticated|yesno:'true,false' }})" x-init="init()" @submit.prevent="submit" class="space-y-6">
+      {% csrf_token %}
+      <div class="grid gap-6 md:grid-cols-4">
+        <div>
+          <label class="block font-semibold mb-1">Your Name</label>
+          <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2" x-model="submitter_name" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Division</label>
+          <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2" x-model="submitter_division" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Department</label>
+          <select class="w-full rounded-xl border-slate-300 px-3 py-2" x-model="department">
+            <option value="">Select department</option>
+            <option value="Applied Electronics & Instrumentation Engineering">Applied Electronics & Instrumentation Engineering</option>
+            <option value="Artificial Intelligence and Data Science">Artificial Intelligence and Data Science</option>
+            <option value="Civil Engineering">Civil Engineering</option>
+            <option value="Computer Science and Engineering and Business Systems">Computer Science and Engineering and Business Systems</option>
+            <option value="Computer Science and Engineering (Cyber Security)">Computer Science and Engineering (Cyber Security)</option>
+            <option value="Computer Science & Design">Computer Science & Design</option>
+            <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+            <option value="Electrical & Electronics Engineering">Electrical & Electronics Engineering</option>
+            <option value="Electronics & Communication Engineering">Electronics & Communication Engineering</option>
+            <option value="Mechanical Engineering">Mechanical Engineering</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Admission No</label>
+          <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2" x-model="submitter_admission_no" />
+        </div>
+      </div>
+      <label class="flex items-center gap-3 mt-2">
+        <input type="checkbox" class="h-4 w-4 rounded border-slate-300" x-model="anonymous" />
+        <span>Submit anonymously (your identity will be hidden from department staff)</span>
+      </label>
+      <div class="text-xs text-slate-500 mb-2">
+        <template x-if="!isAuthenticated && !anonymous">
+          <span class="text-red-600">You’re not logged in. Check “Submit anonymously” or log in to continue.</span>
+        </template>
+        <template x-if="isAuthenticated || anonymous">
+          <span>Anonymous hides your name from staff; the system may still record your account internally.</span>
+        </template>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Title</label>
+        <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2 focus:ring-brand focus:border-brand" x-model="title" @input="validate()" required />
+        <p class="mt-1 text-xs" :class="valid.title ? 'text-green-600' : 'text-red-600'" x-text="valid.title ? 'Looks good' : 'Title too short'"></p>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Description</label>
+        <textarea class="w-full rounded-xl border-slate-300 px-3 py-2 focus:ring-brand focus:border-brand" rows="5" x-model="description" @input="onDescription()" required></textarea>
+        <p class="mt-1 text-xs" :class="valid.description ? 'text-green-600' : 'text-red-600'" x-text="valid.description ? 'Looks good' : 'Description too short'"></p>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Category (suggested)</label>
+        <div class="flex flex-wrap gap-2 mb-2">
+          <template x-for="opt in suggested" :key="opt">
+            <button type="button" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-sm" @click="category=opt" x-text="opt"></button>
+          </template>
+        </div>
+        <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2" x-model="category" @input="validate()" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Priority</label>
+        <select class="w-full rounded-xl border-slate-300 px-3 py-2" x-model="priority">
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Attachments</label>
+        <div class="mt-2 border-2 border-dashed rounded-xl p-6 text-center text-slate-500 bg-slate-50/60" @dragover.prevent @drop.prevent="handleDrop($event)">
+          <p>Drag & drop files here or</p>
+          <label class="mt-2 inline-flex cursor-pointer px-4 py-2 rounded-xl bg-slate-900 text-white">
+            <input type="file" class="hidden" multiple @change="handleFiles($event)" />
+            Choose files
+          </label>
+        </div>
+        <ul class="mt-3 space-y-2">
+          <template x-for="file in files" :key="file.name">
+            <li class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+              <span class="truncate max-w-[70%]" x-text="file.name"></span>
+              <span class="text-xs text-slate-500" x-text="formatSize(file.size)"></span>
+            </li>
+          </template>
+        </ul>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Or record a voice note</label>
+        <div class="mt-2 flex items-center gap-3">
+          <button type="button" class="px-4 py-2 rounded-xl bg-brand text-white" @click="toggleRecording" x-text="recording ? 'Stop' : 'Record'"></button>
+          <div class="text-sm text-slate-600" x-text="recording ? 'Recording...' : (audioBlob ? 'Audio ready' : 'No audio')"></div>
+        </div>
+      </div>
+      <div class="mt-6">
+        <div class="text-sm text-slate-500 mb-2" x-text="status"></div>
+        <button type="submit" class="w-full px-5 py-3 rounded-2xl bg-brand text-white shadow-xl hover:bg-brand-dark disabled:opacity-60 text-lg font-semibold" :disabled="submitting || !valid.title || !valid.description" x-text="submitting ? 'Submitting…' : 'Submit'"></button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+function complaintForm(isAuthenticated=false){
+  return {
+    isAuthenticated: Boolean(isAuthenticated),
+    anonymous: !Boolean(isAuthenticated),
+    submitter_name: '',
+    submitter_division: '',
+    submitter_admission_no: '',
+    title: '',
+    description: '',
+    category: '',
+    priority: 'Medium',
+    department: '',
+    files: [],
+    audioBlob: null,
+    mediaRecorder: null,
+    chunks: [],
+    recording: false,
+    suggested: ['Infrastructure', 'Academics', 'Finance', 'Hostel', 'Transport'],
+    submitting: false,
+    status: '',
+    valid: { title: false, description: false },
+    init(){ this.validate(); },
+    validate(){ this.valid.title = this.title.trim().length >= 8; this.valid.description = this.description.trim().length >= 20; },
+    onDescription(){ this.validate(); this.updateSuggestions(); },
+    updateSuggestions(){
+      const text = (this.description + ' ' + this.title).toLowerCase();
+      const opts = new Set();
+      if(/leak|broken|repair|fan|light|road|toilet|ac|lab|class/.test(text)) opts.add('Infrastructure');
+      if(/exam|mark|result|syllabus|assignment|teacher|class|lecture/.test(text)) opts.add('Academics');
+      if(/fee|refund|payment|scholarship|bill|invoice/.test(text)) opts.add('Finance');
+      if(/hostel|room|warden|mess|food|clean/.test(text)) opts.add('Hostel');
+      if(/bus|transport|route|driver|late/.test(text)) opts.add('Transport');
+      if(opts.size === 0) opts.add('General');
+      this.suggested = Array.from(opts);
+    },
+    handleFiles(e){ this.files = [...this.files, ...e.target.files]; },
+    handleDrop(e){ this.files = [...this.files, ...e.dataTransfer.files]; },
+    formatSize(n){ const kb=(n/1024).toFixed(1); return kb>1024? (kb/1024).toFixed(1)+' MB' : kb+' KB'; },
+    async toggleRecording(){
+      if(this.recording){ this.mediaRecorder.stop(); this.recording=false; return; }
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        this.chunks = [];
+        this.mediaRecorder = new MediaRecorder(stream);
+        this.mediaRecorder.ondataavailable = e=> this.chunks.push(e.data);
+        this.mediaRecorder.onstop = ()=>{ this.audioBlob = new Blob(this.chunks, {type:'audio/webm'}); };
+        this.mediaRecorder.start();
+        this.recording = true;
+      }catch(err){ this.status = 'Microphone permission denied'; }
+    },
+    async submit(){
+      if(!this.isAuthenticated && !this.anonymous){
+        this.status = 'Please check “Submit anonymously” or log in to submit.';
+        return;
+      }
+      this.submitting = true; this.status = 'Submitting...';
+      try{
+        const fd = new FormData();
+        fd.append('title', this.title);
+        fd.append('description', this.description);
+        fd.append('anonymous', this.anonymous ? 'true' : 'false');
+        if(this.submitter_name) fd.append('submitter_name', this.submitter_name);
+        if(this.submitter_division) fd.append('submitter_division', this.submitter_division);
+        if(this.submitter_admission_no) fd.append('submitter_admission_no', this.submitter_admission_no);
+        if(this.category) fd.append('category', this.category);
+        if(this.priority) fd.append('priority', this.priority);
+        if(this.department) fd.append('department', this.department);
+        
+        // Add files
+        this.files.forEach((f,i)=> fd.append('attachments', f));
+        
+        // Add audio if present
+        if(this.audioBlob) {
+          fd.append('audio', this.audioBlob, 'voice.webm');
+        }
+        
+        const url = this.audioBlob ? "{% url 'complaint_create_audio' %}" : "{% url 'complaint_create' %}";
+        const res = await fetch(url, {
+          method: 'POST', 
+          body: fd, 
+          headers: { 'X-CSRFToken': getCsrf() }
+        });
+        
+        if(!res.ok) {
+          if(res.status === 429){
+            throw new Error('Too many attempts. Please try again in a minute.');
+          }
+          let errorText = 'Submission failed';
+          try {
+            const errorData = await res.text();
+            if(errorData && errorData.length < 200) {
+              errorText = errorData;
+            }
+          } catch(e) {
+            // ignore error parsing error
+          }
+          throw new Error(errorText);
+        }
+        
+        this.status = 'Submitted successfully';
+        window.location.href = "{% url 'my_cases' %}";
+      } catch(e) { 
+        this.status = `Error: ${e.message || 'Submission failed'}`;
+        console.error('Submit error:', e);
+      } finally { 
+        this.submitting = false; 
+      }
+    }
+  }
+}
+function getCsrf(){
+  const m = document.cookie.match(/(?:^|; )csrftoken=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : '';
+}
+</script>
+{% endblock %}

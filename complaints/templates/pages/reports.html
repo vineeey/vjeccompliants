@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="font-display text-3xl font-bold">Reports</h1>
+  <p class="mt-2 text-slate-600">Export and analytics. Use the buttons below to download JSON or go to Admin for CSV/PDF exports.</p>
+
+  <div class="mt-6 rounded-2xl bg-white/70 backdrop-blur border border-slate-200 p-6 shadow-soft">
+    <div class="flex gap-3">
+      <button class="px-4 py-2 rounded-xl bg-slate-900 text-white" onclick="downloadJson()">Download JSON</button>
+      <a class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200" href="/admin/complaints/complaint/" target="_blank" rel="noopener">Open Admin</a>
+    </div>
+    <div id="reportState" class="mt-3 text-sm text-slate-500"></div>
+  </div>
+  <div class="mt-6 rounded-2xl bg-white/70 backdrop-blur border border-slate-200 p-6 shadow-soft">
+    <p class="text-slate-500">Charts and filters coming soon.</p>
+  </div>
+</section>
+
+<script>
+async function downloadJson(){
+  const st = document.getElementById('reportState');
+  st.textContent = 'Preparing download…';
+  try{
+    const res = await fetch('{% url "complaint_list" %}');
+    if(!res.ok){ throw new Error('Failed'); }
+    const data = await res.json();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'complaints.json'; a.click();
+    URL.revokeObjectURL(url);
+    st.textContent = 'Downloaded.';
+  }catch(e){ st.textContent = 'Error generating JSON.'; }
+}
+</script>
+{% endblock %}

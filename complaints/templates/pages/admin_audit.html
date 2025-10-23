@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load roles %}
+{% block content %}
+<section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="font-display text-2xl font-bold">Admin Audit Trail</h1>
+  <p class="mt-2 text-slate-600">Access attempts and administrative actions.</p>
+  {% if not request.user|has_admin_role %}
+    <p class="mt-6 text-red-600">Forbidden.</p>
+  {% else %}
+    <div class="mt-6 rounded-xl border border-slate-200 bg-white/70 p-4">
+      <p class="text-sm text-slate-500">This is a placeholder page. Hook it to AdminAccessAudit list as needed.</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="flex items-center justify-center min-h-[80vh] px-2">
+  <div class="w-full max-w-xl mx-auto rounded-3xl bg-white/80 backdrop-blur-lg border border-slate-200 shadow-2xl p-8">
+    <h1 class="font-display text-3xl font-bold text-center mb-2">Profile</h1>
+    <p class="mb-6 text-slate-600 text-center">View and update your account details below.</p>
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      <div>
+        <label class="block font-semibold mb-1">Name</label>
+        <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2" name="name" value="{{ user.get_full_name }}" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Email</label>
+        <input type="email" class="w-full rounded-xl border-slate-300 px-3 py-2" name="email" value="{{ user.email }}" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Division</label>
+        <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2" name="division" value="{{ user.profile.division }}" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Admission No</label>
+        <input type="text" class="w-full rounded-xl border-slate-300 px-3 py-2" name="admission_no" value="{{ user.profile.admission_no }}" />
+      </div>
+      <div class="flex items-center justify-between mt-6">
+        <a href="{% url 'password_change' %}" class="text-brand font-semibold">Change Password</a>
+        <button type="submit" class="px-5 py-3 rounded-2xl bg-brand text-white shadow-xl hover:bg-brand-dark text-lg font-semibold">Update Profile</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

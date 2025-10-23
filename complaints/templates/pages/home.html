@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block hero %}
+{% load roles %}
+<section class="relative overflow-hidden min-h-screen flex flex-col justify-center items-center">
+  <div class="absolute inset-0 w-full h-full z-0">
+    <div id="bg-slideshow" class="w-full h-full"></div>
+  </div>
+  <div class="relative z-10 flex flex-col items-center justify-center py-16 w-full">
+    <div class="flex flex-col items-center" data-aos="zoom-in" data-aos-duration="1000">
+      <img src="{% static 'complaints/img/logo.png' %}" alt="Vimal Jyothi Engineering College Logo" class="w-32 h-32 object-contain rounded-full shadow-lg border-4 border-white bg-white mb-4 animate__animated animate__pulse animate__infinite" />
+      <div class="flex flex-col items-center gap-2 animate__animated animate__fadeInDown">
+        <h1 class="font-display text-5xl sm:text-6xl font-extrabold tracking-tight text-center drop-shadow-lg mb-4" style="font-family: 'Poppins', 'Montserrat', sans-serif;">
+          <span style="color:#f43f5e">Report.</span> <span style="color:#4f46e5">Route.</span> <span style="color:#14b8a6">Resolve.</span>
+        </h1>
+      </div>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="300">
+        {% if request.user|has_admin_role %}
+          <a href="{% url 'complaints-dashboard' %}" class="px-7 py-3 rounded-2xl bg-brand text-white shadow-xl hover:bg-brand-dark text-lg font-semibold transition-transform transform hover:scale-105 animate__animated animate__fadeInUp">Manage Complaints</a>
+          <a href="{% url 'reports' %}" class="px-7 py-3 rounded-2xl bg-white text-brand shadow-xl hover:bg-slate-100 text-lg font-semibold transition-transform transform hover:scale-105 animate__animated animate__fadeInUp animate__delay-1s">Reports</a>
+          <a href="{% url 'admin-audit' %}" class="px-7 py-3 rounded-2xl bg-accent text-white shadow-xl hover:opacity-90 text-lg font-semibold transition-transform transform hover:scale-105 animate__animated animate__fadeInUp animate__delay-2s">Audit Trail</a>
+        {% else %}
+          <a href="{% url 'submit_complaint' %}" class="px-7 py-3 rounded-2xl bg-brand text-white shadow-xl hover:bg-brand-dark text-lg font-semibold transition-transform transform hover:scale-105 animate__animated animate__fadeInUp">Submit Complaint</a>
+          <button id="installPwaBtn" class="px-7 py-3 rounded-2xl bg-slate-900 text-white shadow-xl hover:bg-slate-700 text-lg font-semibold transition-transform transform hover:scale-105 animate__animated animate__fadeInUp animate__delay-1s">Install App</button>
+          <a href="{% url 'admin-access-login' %}" class="px-7 py-3 rounded-2xl bg-white text-brand shadow-xl hover:bg-slate-100 text-lg font-semibold transition-transform transform hover:scale-105 animate__animated animate__fadeInUp animate__delay-2s">HOD/Principal Login</a>
+          <a href="{% url 'admin-access-signup' %}" class="px-7 py-3 rounded-2xl bg-accent text-white shadow-xl hover:opacity-90 text-lg font-semibold transition-transform transform hover:scale-105 animate__animated animate__fadeInUp animate__delay-3s">Admin Signup</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
+      <div class="bg-white/80 rounded-2xl p-6 shadow-lg border border-slate-200 flex flex-col items-center animate__animated animate__fadeInLeft" data-aos="fade-right" data-aos-delay="200">
+        <span class="text-5xl mb-2">🏫</span>
+        <h3 class="font-semibold text-xl text-brand mb-2">Campus Life</h3>
+        <p class="mt-2 text-base text-slate-600 text-center">A vibrant, inclusive environment for learning and growth at VJEC.</p>
+      </div>
+      <div class="bg-white/80 rounded-2xl p-6 shadow-lg border border-slate-200 flex flex-col items-center animate__animated animate__fadeInUp animate__delay-1s" data-aos="fade-up" data-aos-delay="400">
+        <span class="text-5xl mb-2">🎓</span>
+        <h3 class="font-semibold text-xl text-brand mb-2">Academic Excellence</h3>
+        <p class="mt-2 text-base text-slate-600 text-center">Empowering students with top-tier education and research opportunities.</p>
+      </div>
+      <div class="bg-white/80 rounded-2xl p-6 shadow-lg border border-slate-200 flex flex-col items-center animate__animated animate__fadeInRight animate__delay-2s" data-aos="fade-left" data-aos-delay="600">
+        <span class="text-5xl mb-2">🤝</span>
+        <h3 class="font-semibold text-xl text-brand mb-2">Support & Community</h3>
+        <p class="mt-2 text-base text-slate-600 text-center">A strong support system for complaints, feedback, and student well-being.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{# MAIN FEATURES SECTION #}
+
+{% block content %}
+
+<div class="w-full flex justify-center">
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+  <div class="feature-card rounded-2xl bg-white/90 backdrop-blur border border-slate-200 p-8 shadow-xl flex flex-col items-center hover:scale-105 transition-transform duration-300">
+      <span class="text-2xl mb-2">🗂️</span>
+      <h3 class="font-semibold text-lg">Auto-categorization</h3>
+      <p class="mt-2 text-sm text-slate-600 text-center">Smartly routes to departments like Infrastructure, Academics, Finance, and more.</p>
+    </div>
+  <div class="feature-card rounded-2xl bg-white/90 backdrop-blur border border-slate-200 p-8 shadow-xl flex flex-col items-center hover:scale-105 transition-transform duration-300">
+      <span class="text-2xl mb-2">⚡</span>
+      <h3 class="font-semibold text-lg">Priority scoring</h3>
+      <p class="mt-2 text-sm text-slate-600 text-center">Urgent issues like safety or medical get escalated first.</p>
+    </div>
+  <div class="feature-card rounded-2xl bg-white/90 backdrop-blur border border-slate-200 p-8 shadow-xl flex flex-col items-center hover:scale-105 transition-transform duration-300">
+      <span class="text-2xl mb-2">🎤</span>
+      <h3 class="font-semibold text-lg">Voice submission</h3>
+      <p class="mt-2 text-sm text-slate-600 text-center">Record audio; we transcribe and process it for you.</p>
+    </div>
+  <div class="feature-card rounded-2xl bg-white/90 backdrop-blur border border-slate-200 p-8 shadow-xl flex flex-col items-center hover:scale-105 transition-transform duration-300">
+      <span class="text-2xl mb-2">🙈</span>
+      <h3 class="font-semibold text-lg">Anonymous option</h3>
+      <p class="mt-2 text-sm text-slate-600 text-center">Submit confidentially with rate-limits and abuse prevention.</p>
+    </div>
+  </section>
+</div>
+
+<section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
+  <div class="bg-brand text-white rounded-2xl shadow-xl p-10 flex flex-col md:flex-row items-center justify-between gap-8 animate__animated animate__fadeInUp" data-aos="slide-up" data-aos-delay="200">
+    <div>
+      <h2 class="text-2xl font-bold mb-2">Your voice matters at VJEC!</h2>
+      <p class="text-lg">Share your feedback, report issues, and help us build a better campus experience for everyone.</p>
+    </div>
+    <a href="{% url 'submit_complaint' %}" class="mt-4 md:mt-0 px-8 py-4 rounded-xl bg-white text-brand font-semibold text-lg shadow hover:bg-slate-100 transition">Submit Now</a>
+  </div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.feature-card');
+  let lastScrollY = window.scrollY;
+  function animateCards() {
+    const direction = window.scrollY > lastScrollY ? 'down' : 'up';
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      card.classList.remove('slide-in-up','slide-in-down','slide-out');
+      if (inView) {
+        card.classList.add(direction === 'down' ? 'slide-in-down' : 'slide-in-up');
+      } else {
+        card.classList.add('slide-out');
+      }
+    });
+    lastScrollY = window.scrollY;
+  }
+  window.addEventListener('scroll', animateCards);
+  animateCards();
+});
+</script>
+{% endblock %}
