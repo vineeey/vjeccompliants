@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=VJEC%20Complaints&fontAlign=50&fontAlignY=38&color=0:7F00FF,50:E100FF,100:00DBDE&desc=3D%20Animative%20Campus%20Complaint%20Platform&descAlignY=60&animation=fadeIn" />
+<img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=VJEC%20Complaints&fontAlign=50&fontAlignY=38&color=0:7F00FF,50:E100FF,100:00DBDE&desc=3D%20Animated%20Campus%20Complaint%20Platform&descAlignY=60&animation=fadeIn" />
 
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=24&duration=2800&pause=700&color=E100FF&center=true&vCenter=true&width=900&lines=Award-Worthy+UX+for+Complaint+Management;Fast+Submission+%7C+Role-Based+Access+%7C+Traceable+Workflow;Built+with+Django+%2B+DRF+for+Reliability+at+Scale)](https://git.io/typing-svg)
 
